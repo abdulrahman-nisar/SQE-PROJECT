@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Web UI Automation Test Suite" verbose="1">
+
+    <test name="Smoke Tests">
+        <classes>
+            <class name="com.automation.runners.TestRunner"/>
+        </classes>
+    </test>
+
+    <test name="Regression Tests" enabled="false">
+        <classes>
+            <class name="com.automation.runners.RegressionRunner"/>
+        </classes>
+    </test>
+
+</suite>
+
