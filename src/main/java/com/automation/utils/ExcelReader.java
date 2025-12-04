@@ -12,16 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * ExcelReader - Utility class to read data from Excel files
- */
+
 public class ExcelReader {
 
     private static final Logger logger = LogManager.getLogger(ExcelReader.class);
 
-    /**
-     * Read data from Excel sheet and return as List of Maps
-     */
     public static List<Map<String, String>> readExcelData(String filePath, String sheetName) {
         List<Map<String, String>> data = new ArrayList<>();
 
@@ -68,9 +63,6 @@ public class ExcelReader {
         return data;
     }
 
-    /**
-     * Get cell value as String
-     */
     private static String getCellValue(Cell cell) {
         if (cell == null) {
             return "";
@@ -96,9 +88,6 @@ public class ExcelReader {
         }
     }
 
-    /**
-     * Read specific row data by row number
-     */
     public static Map<String, String> readRowData(String filePath, String sheetName, int rowNumber) {
         List<Map<String, String>> allData = readExcelData(filePath, sheetName);
         if (rowNumber > 0 && rowNumber <= allData.size()) {
@@ -107,9 +96,6 @@ public class ExcelReader {
         throw new RuntimeException("Invalid row number: " + rowNumber);
     }
 
-    /**
-     * Read data and return as 2D Object array for TestNG DataProvider
-     */
     public static Object[][] getExcelDataAsArray(String filePath, String sheetName) {
         List<Map<String, String>> data = readExcelData(filePath, sheetName);
         Object[][] dataArray = new Object[data.size()][1];

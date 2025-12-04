@@ -15,17 +15,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * ScreenshotUtil - Utility class for taking screenshots
- */
+
 public class ScreenshotUtil {
 
     private static final Logger logger = LogManager.getLogger(ScreenshotUtil.class);
     private static final String SCREENSHOT_DIR = "screenshots/";
 
-    /**
-     * Take screenshot and save to file
-     */
     public static String takeScreenshot(String fileName) {
         WebDriver driver = DriverManager.getDriver();
         if (driver == null) {
@@ -61,9 +56,6 @@ public class ScreenshotUtil {
         }
     }
 
-    /**
-     * Take screenshot and attach to Allure report
-     */
     public static void attachScreenshotToAllure(String screenshotName) {
         WebDriver driver = DriverManager.getDriver();
         if (driver == null) {
@@ -85,11 +77,8 @@ public class ScreenshotUtil {
         }
     }
 
-    /**
-     * Take screenshot on test failure
-     */
     public static void captureScreenshotOnFailure(String testName) {
-        if (ConfigReader.isScreenshotOnFailure()) {
+        if (ConfigurationFileReader.isScreenshotOnFailure()) {
             takeScreenshot(testName + "_FAILED");
             attachScreenshotToAllure(testName + " - Failure Screenshot");
         }

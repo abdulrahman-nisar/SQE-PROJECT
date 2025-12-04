@@ -3,6 +3,7 @@ package com.automation.stepdefinitions;
 import com.automation.pages.AddContactPage;
 import com.automation.pages.ContactDetailsPage;
 import com.automation.pages.ContactListPage;
+import com.automation.utils.ConfigurationFileReader;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -10,9 +11,7 @@ import org.testng.Assert;
 
 import java.util.Map;
 
-/**
- * ContactManagementStepDefinitions - Step definitions for Contact Management feature
- */
+
 public class ContactManagementStepDefinitions {
 
     private ContactListPage contactListPage;
@@ -28,7 +27,7 @@ public class ContactManagementStepDefinitions {
     @When("I click add new contact button")
     public void iClickAddNewContactButton() {
         contactListPage.clickAddContact();
-        com.automation.utils.ConfigReader.waitFor(com.automation.utils.ConfigReader.getElementActionWait());
+        ConfigurationFileReader.waitFor(ConfigurationFileReader.getElementActionWait());
     }
 
     @When("I enter contact first name {string} and last name {string}")
@@ -90,7 +89,7 @@ public class ContactManagementStepDefinitions {
 
     @Then("the contact should be added successfully")
     public void theContactShouldBeAddedSuccessfully() {
-        com.automation.utils.ConfigReader.shortWait();
+        ConfigurationFileReader.shortWait();
 
         Assert.assertTrue(contactListPage.isOnContactListPage(),
             "Should be on contact list page after adding contact");
@@ -105,7 +104,7 @@ public class ContactManagementStepDefinitions {
     @When("I click on the first contact in the list")
     public void iClickOnTheFirstContactInTheList() {
         contactListPage.clickFirstContact();
-        com.automation.utils.ConfigReader.waitFor(com.automation.utils.ConfigReader.getElementActionWait());
+        ConfigurationFileReader.waitFor(ConfigurationFileReader.getElementActionWait());
     }
 
     @When("I click the delete button")
@@ -134,7 +133,7 @@ public class ContactManagementStepDefinitions {
 
     @Then("the contact should be removed from the list")
     public void theContactShouldBeRemovedFromTheList() {
-        com.automation.utils.ConfigReader.shortWait();
+        ConfigurationFileReader.shortWait();
 
         // Contact should be deleted
         Assert.assertTrue(contactListPage.isOnContactListPage(),

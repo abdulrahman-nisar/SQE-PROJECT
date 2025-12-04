@@ -1,5 +1,6 @@
 package com.automation.pages;
 
+import com.automation.utils.ConfigurationFileReader;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -29,7 +30,7 @@ public class LoginPage extends BasePage {
      */
     @Step("Open login page")
     public void openLoginPage() {
-        navigateToUrl(com.automation.utils.ConfigReader.getAppUrl());
+        navigateToUrl(ConfigurationFileReader.getAppUrl());
         waitForPageLoad();
         logger.info("Opened login page");
     }

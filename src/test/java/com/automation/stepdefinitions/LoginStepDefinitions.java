@@ -2,15 +2,12 @@ package com.automation.stepdefinitions;
 
 import com.automation.driver.DriverManager;
 import com.automation.pages.LoginPage;
-import com.automation.utils.ConfigReader;
+import com.automation.utils.ConfigurationFileReader;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.testng.Assert;
 
-/**
- * LoginStepDefinitions - Step definitions for Login feature
- */
 public class LoginStepDefinitions {
 
     private LoginPage loginPage;
@@ -59,7 +56,7 @@ public class LoginStepDefinitions {
     @Then("I should be logged in successfully")
     public void iShouldBeLoggedInSuccessfully() {
         // Wait a moment for redirect
-        com.automation.utils.ConfigReader.mediumWait();
+        ConfigurationFileReader.mediumWait();
 
         String currentUrl = DriverManager.getDriver().getCurrentUrl();
         // Check if we're on contact list page (case-insensitive)
@@ -74,7 +71,7 @@ public class LoginStepDefinitions {
 
     @Then("I should see an error message")
     public void iShouldSeeAnErrorMessage() {
-        com.automation.utils.ConfigReader.shortWait(); // Wait for error message to appear
+        ConfigurationFileReader.shortWait(); // Wait for error message to appear
 
         boolean errorDisplayed = loginPage.isErrorMessageDisplayed();
 

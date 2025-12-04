@@ -4,10 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-/**
- * ConfigReader - Utility class to read configuration properties
- */
-public class ConfigReader {
+public class ConfigurationFileReader {
 
     private static Properties properties;
     private static final String CONFIG_FILE_PATH = "src/test/resources/config.properties";
@@ -16,9 +13,6 @@ public class ConfigReader {
         loadProperties();
     }
 
-    /**
-     * Load properties from config file
-     */
     private static void loadProperties() {
         properties = new Properties();
         try (FileInputStream fis = new FileInputStream(CONFIG_FILE_PATH)) {
@@ -28,9 +22,6 @@ public class ConfigReader {
         }
     }
 
-    /**
-     * Get property value by key
-     */
     public static String getProperty(String key) {
         String value = properties.getProperty(key);
         if (value == null) {
@@ -39,14 +30,10 @@ public class ConfigReader {
         return value;
     }
 
-    /**
-     * Get property value with default
-     */
     public static String getProperty(String key, String defaultValue) {
         return properties.getProperty(key, defaultValue);
     }
 
-    // Specific getters for common properties
     public static String getBrowser() {
         return getProperty("browser");
     }
@@ -103,19 +90,6 @@ public class ConfigReader {
         return Integer.parseInt(getProperty("redis.port", "6379"));
     }
 
-    // Test execution speed configuration
-    public static int getShortWait() {
-        return Integer.parseInt(getProperty("test.speed.short.wait", "2000"));
-    }
-
-    public static int getMediumWait() {
-        return Integer.parseInt(getProperty("test.speed.medium.wait", "3000"));
-    }
-
-    public static int getLongWait() {
-        return Integer.parseInt(getProperty("test.speed.long.wait", "5000"));
-    }
-
     public static int getPageLoadWait() {
         return Integer.parseInt(getProperty("test.speed.page.load", "3000"));
     }
@@ -124,9 +98,6 @@ public class ConfigReader {
         return Integer.parseInt(getProperty("test.speed.element.action", "1000"));
     }
 
-    /**
-     * Utility method to perform a wait based on configuration
-     */
     public static void waitFor(int milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -136,25 +107,26 @@ public class ConfigReader {
         }
     }
 
-    /**
-     * Perform a short wait
-     */
     public static void shortWait() {
         waitFor(getShortWait());
     }
+    public static int getShortWait() {
+        return Integer.parseInt(getProperty("test.speed.short.wait", "2000"));
+    }
 
-    /**
-     * Perform a medium wait
-     */
     public static void mediumWait() {
         waitFor(getMediumWait());
     }
+    public static int getMediumWait() {
+        return Integer.parseInt(getProperty("test.speed.medium.wait", "3000"));
+    }
 
-    /**
-     * Perform a long wait
-     */
     public static void longWait() {
         waitFor(getLongWait());
     }
+    public static int getLongWait() {
+        return Integer.parseInt(getProperty("test.speed.long.wait", "5000"));
+    }
+
 }
 

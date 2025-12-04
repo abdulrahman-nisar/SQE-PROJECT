@@ -9,22 +9,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * DatabaseReader - Utility class to read data from Database
- */
+
 public class DatabaseReader {
 
     private static final Logger logger = LogManager.getLogger(DatabaseReader.class);
     private static Connection connection;
 
-    /**
-     * Establish database connection
-     */
     public static void connect() {
         try {
-            String url = ConfigReader.getDatabaseUrl();
-            String username = ConfigReader.getDatabaseUsername();
-            String password = ConfigReader.getDatabasePassword();
+            String url = ConfigurationFileReader.getDatabaseUrl();
+            String username = ConfigurationFileReader.getDatabaseUsername();
+            String password = ConfigurationFileReader.getDatabasePassword();
 
             connection = DriverManager.getConnection(url, username, password);
             logger.info("Database connection established");
@@ -35,9 +30,6 @@ public class DatabaseReader {
         }
     }
 
-    /**
-     * Close database connection
-     */
     public static void disconnect() {
         if (connection != null) {
             try {
@@ -49,9 +41,6 @@ public class DatabaseReader {
         }
     }
 
-    /**
-     * Execute query and return results as List of Maps
-     */
     public static List<Map<String, String>> executeQuery(String query) {
         List<Map<String, String>> results = new ArrayList<>();
 
@@ -88,9 +77,6 @@ public class DatabaseReader {
         return results;
     }
 
-    /**
-     * Execute update/insert/delete query
-     */
     public static int executeUpdate(String query) {
         int rowsAffected = 0;
 
@@ -113,9 +99,6 @@ public class DatabaseReader {
         return rowsAffected;
     }
 
-    /**
-     * Get single value from query result
-     */
     public static String getSingleValue(String query) {
         List<Map<String, String>> results = executeQuery(query);
         if (!results.isEmpty()) {
@@ -125,10 +108,7 @@ public class DatabaseReader {
         return null;
     }
 
-    /**
-     * Check if record exists
-     */
-    public static boolean recordExists(String query) {
+    public static boolean isRecordExists(String query) {
         List<Map<String, String>> results = executeQuery(query);
         return !results.isEmpty();
     }

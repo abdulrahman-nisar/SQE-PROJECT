@@ -1,7 +1,7 @@
 package com.automation.pages;
 
 import com.automation.driver.DriverManager;
-import com.automation.utils.ConfigReader;
+import com.automation.utils.ConfigurationFileReader;
 import io.qameta.allure.Step;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +24,7 @@ public class BasePage {
 
     public BasePage() {
         this.driver = DriverManager.getDriver();
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(ConfigReader.getExplicitWait()));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(ConfigurationFileReader.getExplicitWait()));
         PageFactory.initElements(driver, this);
     }
 

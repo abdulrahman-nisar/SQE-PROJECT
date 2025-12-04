@@ -3,6 +3,7 @@ package com.automation.stepdefinitions;
 import com.automation.driver.DriverManager;
 import com.automation.pages.ContactListPage;
 import com.automation.pages.LoginPage;
+import com.automation.utils.ConfigurationFileReader;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.testng.Assert;
@@ -28,7 +29,7 @@ public class LogoutStepDefinitions {
     @When("I logout from the application")
     public void iLogoutFromTheApplication() {
         contactListPage.clickLogout();
-        com.automation.utils.ConfigReader.shortWait();
+        ConfigurationFileReader.shortWait();
     }
 
     @When("I am redirected to the login page")
@@ -39,7 +40,7 @@ public class LogoutStepDefinitions {
 
     @Then("I should be logged out successfully")
     public void iShouldBeLoggedOutSuccessfully() {
-        com.automation.utils.ConfigReader.shortWait();
+        ConfigurationFileReader.shortWait();
 
         String currentUrl = DriverManager.getDriver().getCurrentUrl();
         Assert.assertTrue(currentUrl.contains("login") || loginPage.isOnLoginPage(),
@@ -61,8 +62,8 @@ public class LogoutStepDefinitions {
     @Then("I should be redirected to login when accessing contact list")
     public void iShouldBeRedirectedToLoginWhenAccessingContactList() {
         // Try to access contact list
-        DriverManager.getDriver().get(com.automation.utils.ConfigReader.getAppUrl() + "contactList");
-        com.automation.utils.ConfigReader.shortWait();
+        DriverManager.getDriver().get(ConfigurationFileReader.getAppUrl() + "contactList");
+        ConfigurationFileReader.shortWait();
 
         String currentUrl = DriverManager.getDriver().getCurrentUrl();
         Assert.assertTrue(currentUrl.contains("login") || loginPage.isOnLoginPage(),

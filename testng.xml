@@ -7,11 +7,5 @@
         </classes>
     </test>
 
-    <test name="Regression Tests" enabled="false">
-        <classes>
-            <class name="com.automation.runners.RegressionRunner"/>
-        </classes>
-    </test>
-
 </suite>
 

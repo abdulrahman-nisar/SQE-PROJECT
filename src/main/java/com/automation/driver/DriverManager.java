@@ -1,6 +1,6 @@
 package com.automation.driver;
 
-import com.automation.utils.ConfigReader;
+import com.automation.utils.ConfigurationFileReader;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -14,26 +14,17 @@ import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
 
-/**
- * DriverManager - Manages WebDriver instances using ThreadLocal for parallel execution
- */
 public class DriverManager {
 
     private static final Logger logger = LogManager.getLogger(DriverManager.class);
     private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
-    /**
-     * Get WebDriver instance for current thread
-     */
     public static WebDriver getDriver() {
         return driver.get();
     }
 
-    /**
-     * Initialize WebDriver based on browser configuration
-     */
     public static void initializeDriver() {
-        String browser = ConfigReader.getBrowser().toLowerCase();
+        String browser = ConfigurationFileReader.getBrowser().toLowerCase();
         logger.info("Initializing {} driver", browser);
 
         WebDriver webDriver = null;
@@ -58,14 +49,11 @@ public class DriverManager {
         logger.info("Driver initialized successfully");
     }
 
-    /**
-     * Create Chrome WebDriver
-     */
     private static WebDriver createChromeDriver() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
 
-        if (ConfigReader.isHeadless()) {
+        if (ConfigurationFileReader.isHeadless()) {
             options.addArguments("--headless=new");
         }
 
@@ -81,56 +69,44 @@ public class DriverManager {
         return new ChromeDriver(options);
     }
 
-    /**
-     * Create Firefox WebDriver
-     */
     private static WebDriver createFirefoxDriver() {
         WebDriverManager.firefoxdriver().setup();
         FirefoxOptions options = new FirefoxOptions();
 
-        if (ConfigReader.isHeadless()) {
+        if (ConfigurationFileReader.isHeadless()) {
             options.addArguments("--headless");
         }
 
         return new FirefoxDriver(options);
     }
 
-    /**
-     * Create Edge WebDriver
-     */
     private static WebDriver createEdgeDriver() {
         WebDriverManager.edgedriver().setup();
         EdgeOptions options = new EdgeOptions();
 
-        if (ConfigReader.isHeadless()) {
+        if (ConfigurationFileReader.isHeadless()) {
             options.addArguments("--headless");
         }
 
         return new EdgeDriver(options);
     }
 
-    /**
-     * Configure WebDriver with timeouts and window settings
-     */
     private static void configureDriver() {
         WebDriver webDriver = driver.get();
 
         webDriver.manage().timeouts().implicitlyWait(
-            Duration.ofSeconds(ConfigReader.getImplicitWait())
+            Duration.ofSeconds(ConfigurationFileReader.getImplicitWait())
         );
 
         webDriver.manage().timeouts().pageLoadTimeout(
-            Duration.ofSeconds(ConfigReader.getPageLoadTimeout())
+            Duration.ofSeconds(ConfigurationFileReader.getPageLoadTimeout())
         );
 
-        if (ConfigReader.shouldMaximize()) {
+        if (ConfigurationFileReader.shouldMaximize()) {
             webDriver.manage().window().maximize();
         }
     }
 
-    /**
-     * Quit WebDriver and remove from ThreadLocal
-     */
     public static void quitDriver() {
         if (driver.get() != null) {
             logger.info("Quitting driver");

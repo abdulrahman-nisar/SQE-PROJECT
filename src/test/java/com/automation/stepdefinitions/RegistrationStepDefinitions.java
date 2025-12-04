@@ -3,6 +3,7 @@ package com.automation.stepdefinitions;
 import com.automation.driver.DriverManager;
 import com.automation.pages.LoginPage;
 import com.automation.pages.SignupPage;
+import com.automation.utils.ConfigurationFileReader;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -39,7 +40,7 @@ public class RegistrationStepDefinitions {
     @When("I click the signup button")
     public void iClickTheSignupButton() {
         loginPage.clickSignup();
-        com.automation.utils.ConfigReader.waitFor(com.automation.utils.ConfigReader.getElementActionWait());
+        ConfigurationFileReader.waitFor(ConfigurationFileReader.getElementActionWait());
     }
 
     @When("I enter registration details:")
@@ -105,7 +106,7 @@ public class RegistrationStepDefinitions {
 
     @Then("I should be registered successfully")
     public void iShouldBeRegisteredSuccessfully() {
-        com.automation.utils.ConfigReader.mediumWait(); // Wait for registration to process
+        ConfigurationFileReader.mediumWait(); // Wait for registration to process
 
         String currentUrl = DriverManager.getDriver().getCurrentUrl();
         // Check if we're on contact list page (case-insensitive)
@@ -139,7 +140,7 @@ public class RegistrationStepDefinitions {
 
     @Then("I should see an error message indicating email already exists")
     public void iShouldSeeErrorMessageEmailExists() {
-        com.automation.utils.ConfigReader.shortWait(); // Wait for error message to appear
+        ConfigurationFileReader.shortWait(); // Wait for error message to appear
 
         // Check if error message is displayed and contains the expected text
         boolean errorDisplayed = signupPage.isErrorMessageDisplayed("Email address is already in use");
@@ -168,7 +169,7 @@ public class RegistrationStepDefinitions {
 
     @Then("I should see the contact list page")
     public void iShouldSeeTheContactListPage() {
-        com.automation.utils.ConfigReader.shortWait();
+        ConfigurationFileReader.shortWait();
 
         String currentUrl = DriverManager.getDriver().getCurrentUrl();
         Assert.assertTrue(currentUrl.contains("contactList"),
