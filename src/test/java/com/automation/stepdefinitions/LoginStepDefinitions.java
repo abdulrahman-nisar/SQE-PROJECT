@@ -3,10 +3,15 @@ package com.automation.stepdefinitions;
 import com.automation.driver.DriverManager;
 import com.automation.pages.LoginPage;
 import com.automation.utils.ConfigurationFileReader;
+import com.automation.utils.DatabaseReader;
+import com.automation.utils.ExcelReader;
+import com.automation.utils.RedisReader;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.testng.Assert;
+
+import java.util.Map;
 
 public class LoginStepDefinitions {
 
@@ -42,6 +47,44 @@ public class LoginStepDefinitions {
             loginPage.enterPassword(password);
         }
     }
+
+
+    @When("I enter credentials from database for email {string}")
+    public void iEnterCredentialsFromDatabase(String email) {
+        Map<String, String> credentials = DatabaseReader.getUserCredentials(email);
+
+        if (credentials.isEmpty()) {
+            throw new RuntimeException("No credentials found in database for email: " + email);
+        }
+
+        loginPage.enterEmail(credentials.get("email"));
+        loginPage.enterPassword(credentials.get("password"));
+    }
+
+    @When("I enter credentials from excel row {int}")
+    public void iEnterCredentialsFromExcel(int rowIndex) {
+        Map<String, String> credentials = ExcelReader.getUserCredentialsFromExcel(rowIndex);
+
+        if (credentials.isEmpty()) {
+            throw new RuntimeException("No credentials found in Excel at row: " + rowIndex);
+        }
+
+        loginPage.enterEmail(credentials.get("email"));
+        loginPage.enterPassword(credentials.get("password"));
+    }
+
+    @When("I enter credentials from redis for email {string}")
+    public void iEnterCredentialsFromRedis(String email) {
+        Map<String, String> credentials = RedisReader.getUserCredentialsFromRedis(email);
+
+        if (credentials.isEmpty()) {
+            throw new RuntimeException("No credentials found in Redis for email: " + email);
+        }
+
+        loginPage.enterEmail(credentials.get("email"));
+        loginPage.enterPassword(credentials.get("password"));
+    }
+
 
     @When("I click the submit button")
     public void iClickTheSubmitButton() {

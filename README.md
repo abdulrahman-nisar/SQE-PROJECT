@@ -1,35 +1,413 @@
-}
-```
-
-### **3. Configurable Wait Times**
-
-Control test speed without code changes:
-
-```properties
-test.speed.medium.wait=3000  # Change to slow down/speed up
-```
-
-### **4. Comprehensive Error Detection**
-
-Validates specific error messages:
-
-```java
-boolean errorDisplayed = signupPage.isErrorMessageDisplayed("Email address is already in use");
+│       │       ├── RegistrationStepDefinitions.java
+│       │       ├── LogoutStepDefinitions.java
+│       │       └── ContactManagementStepDefinitions.java
+│       └── resources/
+│           ├── features/
+│           │   ├── Login.feature
+│           │   ├── Registration.feature
+│           │   ├── Logout.feature
+│           │   └── ContactManagement.feature
+│           ├── testdata/
+│           │   └── LoginTestData.xlsx
+│           ├── config.properties
+│           ├── allure.properties
+│           └── log4j2.xml
+├── database_setup.sql
+├── create_excel.vbs
+├── pom.xml
+├── testng.xml
+└── README.md
 ```
 
 ---
 
-## 🚀 Quick Start Commands
+## 📈 Reporting
 
+### Allure Reports
+
+After running tests, generate Allure report:
 ```bash
-# 1. Install dependencies
-mvn clean install -DskipTests
-
-# 2. Run smoke tests
-mvn test -Dcucumber.filter.tags="@smoke"
-
-# 3. View Allure report
 mvn allure:serve
+```
+
+Features:
+- ✅ Test execution summary
+- ✅ Test case details with steps
+- ✅ Screenshots on failure
+- ✅ Execution timeline
+- ✅ Test categories and tags
+- ✅ Environment information
+
+### Console Logs
+
+Logs are generated in:
+- `logs/automation.log` - Application logs
+- Console output during test execution
+
+---
+
+## 🎯 Test Scenarios
+
+### Login Feature (3 Data Sources × 2 Scenarios = 6 Tests)
+
+✅ **Positive Tests:**
+- Login with Database credentials
+- Login with Excel credentials  
+- Login with Redis credentials
+
+❌ **Negative Tests:**
+- Invalid login with Database credentials
+- Invalid login with Excel credentials
+
+### Other Features
+- User Registration
+- User Logout
+- Contact Management (Add, View, Edit, Delete)
+
+---
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+**1. Database Connection Error**
+- Ensure XAMPP MySQL is running
+- Verify database name: `sqe_project`
+- Check default XAMPP password is empty
+
+**2. Excel File Not Found**
+- Verify file path: `src/test/resources/testdata/LoginTestData.xlsx`
+- Ensure Excel file has correct structure
+
+**3. Redis Connection Error**
+- Ensure Redis server is running (`redis-server.exe`)
+- Check Redis is running on port 6379
+- Verify test data is set in Redis using `redis-cli.exe`
+
+**4. WebDriver Issues**
+- Update Chrome to latest version
+- WebDriverManager should auto-download drivers
+- Check internet connection for driver download
+# 🎯 Web UI Automation Framework - Contact List Application
+---
+
+## 📝 Configuration
+
+### config.properties
+```properties
+base.url=https://thinking-tester-contact-list.herokuapp.com/
+browser=chrome
+headless.mode=false
+implicit.wait=10
+explicit.wait=20
+## 📋 Table of Contents
+- [Features](#-features)
+- [Prerequisites](#-prerequisites)
+- [Data Source Setup](#-data-source-setup)
+  - [MySQL Database Setup](#1-mysql-database-xampp)
+  - [Excel Setup](#2-excel-setup)
+✅ Selenium WebDriver integration  
+✅ Cucumber BDD framework  
+✅ Page Object Model  
+✅ MySQL Database integration  
+✅ Excel data source integration  
+✅ Redis cache integration  
+✅ Allure reporting  
+✅ Cross-browser testing  
+✅ Screenshot on failure  
+✅ Log4j2 logging  
+
+---
+
+## 📞 Support
+
+For issues or questions:
+1. Check logs in `logs/automation.log`
+2. Verify all prerequisites are installed
+3. Ensure data sources are set up correctly
+
+---
+
+**Happy Testing! 🚀**  
+---
+
+## ✨ Features
+
+- ✅ **Selenium WebDriver** for browser automation
+- ✅ **Cucumber BDD** with Gherkin syntax
+- ✅ **TestNG** test framework
+- ✅ **Page Object Model** design pattern
+- ✅ **Allure Reports** for beautiful test reporting
+- ✅ **Multiple Data Sources**: Database, Excel, Redis
+- ✅ **Cross-browser** support (Chrome, Firefox, Edge)
+- ✅ **Screenshot** on test failure
+- ✅ **Log4j2** logging
+- ✅ **WebDriverManager** for automatic driver management
+
+---
+
+## 🔧 Prerequisites
+
+Before running the tests, ensure you have the following installed:
+
+1. **Java JDK 11 or higher**
+   ```bash
+   java -version
+   ```
+
+2. **Maven 3.6 or higher**
+   ```bash
+   mvn -version
+   ```
+
+3. **Google Chrome** (latest version)
+
+4. **XAMPP** (for MySQL database)
+   - Download from: https://www.apachefriends.org/
+
+5. **Redis** (for Redis data source)
+   - Download from: https://github.com/microsoftarchive/redis/releases
+
+---
+
+## 🗄️ Data Source Setup
+
+This project demonstrates fetching login credentials from **3 different data sources**:
+
+### 1. MySQL Database (XAMPP)
+
+#### Step 1: Install and Start XAMPP
+1. Download and install XAMPP from https://www.apachefriends.org/
+2. Start **Apache** and **MySQL** services from XAMPP Control Panel
+
+#### Step 2: Create Database and Table
+1. Open phpMyAdmin: http://localhost/phpmyadmin
+2. Click on "SQL" tab
+3. Copy and paste the content from `database_setup.sql`:
+
+```sql
+-- Create database
+CREATE DATABASE IF NOT EXISTS sqe_project;
+USE sqe_project;
+
+-- Create users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- Insert test data
+INSERT INTO users (email, password) VALUES
+('john.test.2.doe@test.com', 'SecurePass123'),
+('invalid@example.com', 'wrongpassword');
+```
+
+4. Click "Go" to execute
+
+#### Step 3: Verify Database Configuration
+The database connection is configured in `DatabaseReader.java`:
+```java
+private static final String DB_URL = "jdbc:mysql://localhost:3306/sqe_project";
+private static final String DB_USER = "root";
+private static final String DB_PASSWORD = ""; // Default XAMPP password is empty
+```
+
+---
+
+### 2. Excel Setup
+
+#### Step 1: Create Excel File
+The Excel file should be located at:
+```
+src/test/resources/testdata/LoginTestData.xlsx
+```
+
+#### Step 2: Excel File Structure
+Create an Excel file with the following structure:
+
+| email                      | password       |
+|----------------------------|----------------|
+| john.test.2.doe@test.com   | SecurePass123  |
+| invalid@example.com        | wrongpassword  |
+
+**Manual Steps:**
+1. Open Excel
+2. Create a new workbook
+3. In Sheet1, add headers in Row 1: `email` and `password`
+4. Add test data in rows 2 and 3 as shown above
+5. Save as `LoginTestData.xlsx` in `src/test/resources/testdata/`
+
+**OR** use the provided VBScript (if Excel is installed):
+```bash
+cscript create_excel.vbs
+```
+
+---
+
+### 3. Redis Setup
+
+#### Step 1: Install Redis on Windows
+1. Download Redis for Windows: https://github.com/microsoftarchive/redis/releases
+2. Download `Redis-x64-3.0.504.zip`
+3. Extract to `C:\Redis`
+
+#### Step 2: Start Redis Server
+Open Command Prompt and run:
+```bash
+cd C:\Redis
+redis-server.exe
+```
+
+Keep this window open (Redis server is now running on localhost:6379)
+
+#### Step 3: Add Test Data to Redis
+Open another Command Prompt and run:
+```bash
+cd C:\Redis
+redis-cli.exe
+```
+
+Then execute these commands:
+```redis
+# Set credentials for valid user
+HSET user:john.test.2.doe@test.com password SecurePass123
+
+# Set credentials for invalid user
+HSET user:invalid@example.com password wrongpassword
+
+# Verify data
+HGETALL user:john.test.2.doe@test.com
+
+# Exit
+exit
+```
+
+#### Step 4: Verify Redis Configuration
+The Redis connection is configured in `RedisReader.java`:
+```java
+private static final String REDIS_HOST = "localhost";
+private static final int REDIS_PORT = 6379;
+```
+
+---
+
+## 📦 Installation
+
+1. **Clone the repository** (or download)
+   ```bash
+   cd C:\Users\PMLS\Desktop\SQE-PROJECT
+   ```
+
+2. **Install Maven dependencies**
+   ```bash
+   mvn clean install -DskipTests
+   ```
+
+---
+
+## 🚀 Running Tests
+
+### Run All Tests
+```bash
+mvn clean test
+```
+
+### Run Tests by Tags
+
+**Smoke Tests (all data sources):**
+```bash
+mvn clean test -Dcucumber.filter.tags="@smoke"
+```
+
+**Database Tests Only:**
+```bash
+mvn clean test -Dcucumber.filter.tags="@database"
+```
+
+**Excel Tests Only:**
+```bash
+mvn clean test -Dcucumber.filter.tags="@excel"
+```
+
+**Redis Tests Only:**
+```bash
+mvn clean test -Dcucumber.filter.tags="@redis"
+```
+
+**Login Feature Only:**
+```bash
+mvn clean test -Dcucumber.filter.tags="@login"
+```
+
+**Negative Tests:**
+```bash
+mvn clean test -Dcucumber.filter.tags="@negative"
+```
+
+### Generate Allure Report
+```bash
+# After running tests
+mvn allure:serve
+```
+
+---
+
+## 📊 Test Data Sources
+
+### Login Credentials Overview
+
+| Data Source | Email                      | Password       | Purpose        |
+|-------------|----------------------------|----------------|----------------|
+| **Database** | john.test.2.doe@test.com  | SecurePass123  | Valid Login    |
+| **Database** | invalid@example.com       | wrongpassword  | Invalid Login  |
+| **Excel**    | john.test.2.doe@test.com  | SecurePass123  | Valid Login    |
+| **Excel**    | invalid@example.com       | wrongpassword  | Invalid Login  |
+| **Redis**    | john.test.2.doe@test.com  | SecurePass123  | Valid Login    |
+
+### Data Source Utilities
+
+1. **DatabaseReader.java** - Reads from MySQL database
+   - `getUserCredentials(email)` - Get credentials by email
+   - `getAllUserCredentials()` - Get all users
+
+2. **ExcelReader.java** - Reads from Excel file
+   - `getUserCredentialsFromExcel(rowIndex)` - Get credentials by row
+   - `getUserCredentialsByEmail(email)` - Get credentials by email
+
+3. **RedisReader.java** - Reads from Redis cache
+   - `getUserCredentialsFromRedis(email)` - Get credentials by email
+   - `getAllUserCredentialsFromRedis()` - Get all users
+
+---
+
+## 📁 Project Structure
+
+```
+SQE-PROJECT/
+├── src/
+│   ├── main/java/com/automation/
+│   │   ├── driver/
+│   │   │   └── DriverManager.java
+│   │   ├── pages/
+│   │   │   ├── BasePage.java
+│   │   │   ├── LoginPage.java
+│   │   │   ├── SignupPage.java
+│   │   │   └── ContactListPage.java
+│   │   └── utils/
+│   │       ├── ConfigurationFileReader.java
+│   │       ├── ScreenshotUtil.java
+│   │       ├── DatabaseReader.java
+│   │       ├── ExcelReader.java
+│   │       └── RedisReader.java
+│   └── test/
+│       ├── java/com/automation/
+│       │   ├── runners/
+│       │   │   └── TestRunner.java
+│       │   └── stepdefinitions/
+│       │       ├── Hooks.java
+│       │       ├── LoginStepDefinitions.java
 
 # 4. Run all tests
 mvn clean test

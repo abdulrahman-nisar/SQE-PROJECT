@@ -7,63 +7,115 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 
 public class ExcelReader {
 
     private static final Logger logger = LogManager.getLogger(ExcelReader.class);
+    private static final String EXCEL_FILE_PATH = ConfigurationFileReader.getProperty("excel.path");
 
-    public static List<Map<String, String>> readExcelData(String filePath, String sheetName) {
-        List<Map<String, String>> data = new ArrayList<>();
+    public static Map<String, String> getUserCredentialsFromExcel(int rowIndex) {
+        Map<String, String> credentials = new HashMap<>();
 
-        try (FileInputStream fis = new FileInputStream(filePath);
+        try (FileInputStream fis = new FileInputStream(EXCEL_FILE_PATH);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
-            Sheet sheet = workbook.getSheet(sheetName);
-            if (sheet == null) {
-                logger.error("Sheet '{}' not found in Excel file", sheetName);
-                throw new RuntimeException("Sheet '" + sheetName + "' not found");
+            Sheet sheet = workbook.getSheetAt(0);
+            Row row = sheet.getRow(rowIndex + 1);
+
+            if (row != null) {
+                Cell emailCell = row.getCell(0);
+                Cell passwordCell = row.getCell(1);
+
+                String email = getCellValueAsString(emailCell);
+                String password = getCellValueAsString(passwordCell);
+
+                credentials.put("email", email);
+                credentials.put("password", password);
+
+                logger.info("Retrieved credentials from Excel row {}: {}", rowIndex, email);
+            } else {
+                logger.warn("Row {} not found in Excel file", rowIndex);
             }
 
-            Row headerRow = sheet.getRow(0);
-            int columnCount = headerRow.getLastCellNum();
+        } catch (IOException e) {
+            logger.error("Error reading Excel file: {}", e.getMessage());
+            throw new RuntimeException("Failed to read Excel file: " + EXCEL_FILE_PATH, e);
+        }
 
-            // Get headers
-            List<String> headers = new ArrayList<>();
-            for (int i = 0; i < columnCount; i++) {
-                Cell cell = headerRow.getCell(i);
-                headers.add(getCellValue(cell));
-            }
+        return credentials;
+    }
 
-            // Read data rows
-            int rowCount = sheet.getLastRowNum();
-            for (int i = 1; i <= rowCount; i++) {
+    public static Map<String, String> getUserCredentialsByEmail(String email) {
+        Map<String, String> credentials = new HashMap<>();
+
+        try (FileInputStream fis = new FileInputStream(EXCEL_FILE_PATH);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row != null) {
-                    Map<String, String> rowData = new HashMap<>();
-                    for (int j = 0; j < columnCount; j++) {
-                        Cell cell = row.getCell(j);
-                        rowData.put(headers.get(j), getCellValue(cell));
+                    String currentEmail = getCellValueAsString(row.getCell(0));
+
+                    if (currentEmail != null && currentEmail.equalsIgnoreCase(email)) {
+                        String password = getCellValueAsString(row.getCell(1));
+                        credentials.put("email", currentEmail);
+                        credentials.put("password", password);
+                        logger.info("Found credentials in Excel for email: {}", email);
+                        break;
                     }
-                    data.add(rowData);
                 }
             }
 
-            logger.info("Read {} rows from Excel sheet '{}'", data.size(), sheetName);
+            if (credentials.isEmpty()) {
+                logger.warn("No credentials found in Excel for email: {}", email);
+            }
 
         } catch (IOException e) {
-            logger.error("Error reading Excel file: {}", filePath, e);
-            throw new RuntimeException("Failed to read Excel file: " + filePath, e);
+            logger.error("Error reading Excel file: {}", e.getMessage());
+            throw new RuntimeException("Failed to read Excel file: " + EXCEL_FILE_PATH, e);
         }
 
-        return data;
+        return credentials;
     }
 
-    private static String getCellValue(Cell cell) {
+    public static Map<String, Map<String, String>> getAllUserCredentialsFromExcel() {
+        Map<String, Map<String, String>> allCredentials = new HashMap<>();
+
+        try (FileInputStream fis = new FileInputStream(EXCEL_FILE_PATH);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row != null) {
+                    String email = getCellValueAsString(row.getCell(0));
+                    String password = getCellValueAsString(row.getCell(1));
+
+                    if (email != null && !email.trim().isEmpty()) {
+                        Map<String, String> credentials = new HashMap<>();
+                        credentials.put("email", email);
+                        credentials.put("password", password);
+                        allCredentials.put(email, credentials);
+                    }
+                }
+            }
+
+            logger.info("Retrieved {} user credentials from Excel", allCredentials.size());
+
+        } catch (IOException e) {
+            logger.error("Error reading Excel file: {}", e.getMessage());
+            throw new RuntimeException("Failed to read Excel file: " + EXCEL_FILE_PATH, e);
+        }
+
+        return allCredentials;
+    }
+
+    private static String getCellValueAsString(Cell cell) {
         if (cell == null) {
             return "";
         }
@@ -72,39 +124,14 @@ public class ExcelReader {
             case STRING:
                 return cell.getStringCellValue();
             case NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    return cell.getDateCellValue().toString();
-                } else {
-                    return String.valueOf((long) cell.getNumericCellValue());
-                }
+                return String.valueOf((long) cell.getNumericCellValue());
             case BOOLEAN:
                 return String.valueOf(cell.getBooleanCellValue());
             case FORMULA:
                 return cell.getCellFormula();
-            case BLANK:
-                return "";
             default:
                 return "";
         }
-    }
-
-    public static Map<String, String> readRowData(String filePath, String sheetName, int rowNumber) {
-        List<Map<String, String>> allData = readExcelData(filePath, sheetName);
-        if (rowNumber > 0 && rowNumber <= allData.size()) {
-            return allData.get(rowNumber - 1);
-        }
-        throw new RuntimeException("Invalid row number: " + rowNumber);
-    }
-
-    public static Object[][] getExcelDataAsArray(String filePath, String sheetName) {
-        List<Map<String, String>> data = readExcelData(filePath, sheetName);
-        Object[][] dataArray = new Object[data.size()][1];
-
-        for (int i = 0; i < data.size(); i++) {
-            dataArray[i][0] = data.get(i);
-        }
-
-        return dataArray;
     }
 }
 
