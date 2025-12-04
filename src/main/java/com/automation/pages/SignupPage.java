@@ -4,9 +4,6 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-/**
- * SignupPage - Page Object Model for Signup/Registration Page
- */
 public class SignupPage extends BasePage {
 
     @FindBy(id = "firstName")
@@ -30,57 +27,41 @@ public class SignupPage extends BasePage {
     @FindBy(id = "error")
     private WebElement errorMessage;
 
-    /**
-     * Enter first name
-     */
+
     @Step("Enter first name: {firstName}")
     public void enterFirstName(String firstName) {
         type(firstNameField, firstName);
     }
 
-    /**
-     * Enter last name
-     */
+
     @Step("Enter last name: {lastName}")
     public void enterLastName(String lastName) {
         type(lastNameField, lastName);
     }
 
-    /**
-     * Enter email
-     */
+
     @Step("Enter email: {email}")
     public void enterEmail(String email) {
         type(emailField, email);
     }
 
-    /**
-     * Enter password
-     */
+
     @Step("Enter password")
     public void enterPassword(String password) {
         type(passwordField, password);
     }
 
-    /**
-     * Click submit button
-     */
     @Step("Click submit button")
     public void clickSubmit() {
         click(submitButton);
     }
 
-    /**
-     * Click cancel button
-     */
     @Step("Click cancel button")
     public void clickCancel() {
         click(cancelButton);
     }
 
-    /**
-     * Perform signup
-     */
+
     @Step("Signup with email: {email}")
     public void signup(String firstName, String lastName, String email, String password) {
         enterFirstName(firstName);
@@ -91,18 +72,14 @@ public class SignupPage extends BasePage {
         logger.info("Signup performed with email: {}", email);
     }
 
-    /**
-     * Get error message
-     */
+
     @Step("Get error message")
     public String getErrorMessage() {
         waitForElementToBeVisible(errorMessage);
         return getText(errorMessage);
     }
 
-    /**
-     * Check if error message is displayed
-     */
+
     public boolean isErrorMessageDisplayed() {
         try {
             waitForElementToBeVisible(errorMessage);
@@ -115,9 +92,7 @@ public class SignupPage extends BasePage {
         }
     }
 
-    /**
-     * Get the error message text
-     */
+
     public String getErrorMessageText() {
         try {
             waitForElementToBeVisible(errorMessage);
@@ -127,9 +102,7 @@ public class SignupPage extends BasePage {
         }
     }
 
-    /**
-     * Check if specific error message is displayed
-     */
+
     public boolean isErrorMessageDisplayed(String expectedMessage) {
         try {
             waitForElementToBeVisible(errorMessage);
@@ -142,9 +115,7 @@ public class SignupPage extends BasePage {
         }
     }
 
-    /**
-     * Check if on signup page
-     */
+
     public boolean isOnSignupPage() {
         return isDisplayed(firstNameField) && isDisplayed(lastNameField);
     }

@@ -4,9 +4,6 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-/**
- * AddContactPage - Page Object Model for Add Contact Page
- */
 public class AddContactPage extends BasePage {
 
     @FindBy(id = "firstName")
@@ -51,113 +48,84 @@ public class AddContactPage extends BasePage {
     @FindBy(id = "error")
     private WebElement errorMessage;
 
-    /**
-     * Enter first name
-     */
+
     @Step("Enter first name: {firstName}")
     public void enterFirstName(String firstName) {
         type(firstNameField, firstName);
     }
 
-    /**
-     * Enter last name
-     */
+
     @Step("Enter last name: {lastName}")
     public void enterLastName(String lastName) {
         type(lastNameField, lastName);
     }
 
-    /**
-     * Enter birthdate
-     */
+
     @Step("Enter birthdate: {birthdate}")
     public void enterBirthdate(String birthdate) {
         type(birthdateField, birthdate);
     }
 
-    /**
-     * Enter email
-     */
+
     @Step("Enter email: {email}")
     public void enterEmail(String email) {
         type(emailField, email);
     }
 
-    /**
-     * Enter phone
-     */
+
     @Step("Enter phone: {phone}")
     public void enterPhone(String phone) {
         type(phoneField, phone);
     }
 
-    /**
-     * Enter street1
-     */
+
     @Step("Enter street address 1: {street1}")
     public void enterStreet1(String street1) {
         type(street1Field, street1);
     }
 
-    /**
-     * Enter street2
-     */
     @Step("Enter street address 2: {street2}")
     public void enterStreet2(String street2) {
         type(street2Field, street2);
     }
 
-    /**
-     * Enter city
-     */
+
     @Step("Enter city: {city}")
     public void enterCity(String city) {
         type(cityField, city);
     }
 
-    /**
-     * Enter state/province
-     */
+
     @Step("Enter state/province: {stateProvince}")
     public void enterStateProvince(String stateProvince) {
         type(stateProvinceField, stateProvince);
     }
 
-    /**
-     * Enter postal code
-     */
+
     @Step("Enter postal code: {postalCode}")
     public void enterPostalCode(String postalCode) {
         type(postalCodeField, postalCode);
     }
 
-    /**
-     * Enter country
-     */
+
     @Step("Enter country: {country}")
     public void enterCountry(String country) {
         type(countryField, country);
     }
 
-    /**
-     * Click submit button
-     */
+
     @Step("Click submit button")
     public void clickSubmit() {
         click(submitButton);
     }
 
-    /**
-     * Click cancel button
-     */
+
     @Step("Click cancel button")
     public void clickCancel() {
         click(cancelButton);
     }
 
-    /**
-     * Add contact with basic details
-     */
+
     @Step("Add contact: {firstName} {lastName}")
     public void addContact(String firstName, String lastName, String email, String phone) {
         enterFirstName(firstName);
@@ -168,9 +136,7 @@ public class AddContactPage extends BasePage {
         logger.info("Contact added: {} {}", firstName, lastName);
     }
 
-    /**
-     * Add contact with all details
-     */
+
     @Step("Add contact with full details")
     public void addContactWithFullDetails(String firstName, String lastName, String birthdate,
                                           String email, String phone, String street1, String street2,
@@ -190,25 +156,19 @@ public class AddContactPage extends BasePage {
         logger.info("Contact added with full details: {} {}", firstName, lastName);
     }
 
-    /**
-     * Get error message
-     */
+
     @Step("Get error message")
     public String getErrorMessage() {
         waitForElementToBeVisible(errorMessage);
         return getText(errorMessage);
     }
 
-    /**
-     * Check if error message is displayed
-     */
+
     public boolean isErrorMessageDisplayed() {
         return isDisplayed(errorMessage);
     }
 
-    /**
-     * Check if on add contact page
-     */
+
     public boolean isOnAddContactPage() {
         return isDisplayed(firstNameField) && isDisplayed(submitButton);
     }

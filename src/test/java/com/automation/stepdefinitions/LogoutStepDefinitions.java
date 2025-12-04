@@ -8,9 +8,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.testng.Assert;
 
-/**
- * LogoutStepDefinitions - Step definitions for Logout feature
- */
 public class LogoutStepDefinitions {
 
     private ContactListPage contactListPage;

@@ -63,7 +63,6 @@ public class DriverManager {
         options.addArguments("--no-sandbox");
         options.addArguments("--remote-allow-origins=*");
 
-        // Configure alert handling - accept alerts instead of dismissing them
         options.setCapability("unhandledPromptBehavior", "accept");
 
         return new ChromeDriver(options);

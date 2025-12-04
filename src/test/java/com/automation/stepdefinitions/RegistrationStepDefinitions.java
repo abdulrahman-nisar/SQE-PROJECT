@@ -11,9 +11,6 @@ import org.testng.Assert;
 
 import java.util.Map;
 
-/**
- * RegistrationStepDefinitions - Step definitions for Registration feature
- */
 public class RegistrationStepDefinitions {
 
     private LoginPage loginPage;
@@ -25,9 +22,6 @@ public class RegistrationStepDefinitions {
         this.signupPage = new SignupPage();
     }
 
-    /**
-     * Generate unique email using timestamp to avoid "email already exists" errors
-     */
     private String generateUniqueEmail(String baseEmail) {
         long timestamp = System.currentTimeMillis();
         String[] parts = baseEmail.split("@");
